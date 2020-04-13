@@ -110,59 +110,59 @@ def updateWeatherEvents():
 	"""Function which updates every 61 mins. The token for spotify expires after an hour, until it refreshes, the Spot
 	refresh idles. Weather and events are also updated"""
 	global token
-	weatherRefresh()
+	# weatherRefresh()
 	eventRefresh()
 	token = Spotify.getToken()
 	root.after(3660000, updateWeatherEvents)
 
-def weatherRefresh():
-	"""Gets the weather forecast for the next 24 hours, if this is not none then, update the 5th column(time) and try to 
-	update the 6th column(weather). If no image exists with the name, then print the text version of the weather."""
-	global weatherCells
-	weatherForecast = weather.weatherFor()
+# def weatherRefresh():
+# 	"""Gets the weather forecast for the next 24 hours, if this is not none then, update the 5th column(time) and try to 
+# 	update the 6th column(weather). If no image exists with the name, then print the text version of the weather."""
+# 	global weatherCells
+# 	weatherForecast = weather.weatherFor()
 
-	if weatherForecast:
-		for i in range(8):
-			weatherCells[(i,5)].configure(text=weatherForecast[i][5])
-			try:
-				path= 'images/' + weatherForecast[i][6]  +'.png'
-				first_step = Image.open(path)
-				img = first_step.resize((50,50), resample=0)
-				my_image = PhotoImage(img)
-				weatherCells[(i,6)].configure(image=my_image)
-				weatherCells[(i,6)].image = my_image
-			except:
-				weatherCells[(i,6)].configure(text=weatherForecast[i][6], font = ('caviar dreams', 10), bg='black', fg='white')
-	else:
-		for i in range(8):
-			for j in range(5,7):
-				weatherCells[(i,j)].configure(text="")	
+# 	if weatherForecast:
+# 		for i in range(8):
+# 			weatherCells[(i,5)].configure(text=weatherForecast[i][5])
+# 			try:
+# 				path= 'images/' + weatherForecast[i][6]  +'.png'
+# 				first_step = Image.open(path)
+# 				img = first_step.resize((50,50), resample=0)
+# 				my_image = PhotoImage(img)
+# 				weatherCells[(i,6)].configure(image=my_image)
+# 				weatherCells[(i,6)].image = my_image
+# 			except:
+# 				weatherCells[(i,6)].configure(text=weatherForecast[i][6], font = ('caviar dreams', 10), bg='black', fg='white')
+# 	else:
+# 		for i in range(8):
+# 			for j in range(5,7):
+# 				weatherCells[(i,j)].configure(text="")	
 
-def drawWeather():
-	global weatherCells
-	weatherForecast = weather.weatherFor()
-	weatherCells={}
-	for i in range(8): #Rows
-		for j in range(7): #Columns
-			if j<5:
-				weathertable = tk.Label(root, text=weatherForecast[i][j], font = ('caviar dreams', 12, 'bold'), bg='black', fg='white')
-				weathertable.grid(in_=MR, row=i, column=j, padx = 10)				
-			elif j == 5:
-				weathertable = tk.Label(root, text=weatherForecast[i][j], font = ('caviar dreams', 12, 'bold'), bg='black', fg='white')
-				weathertable.grid(in_=MR, row=i, column=j, padx = 10)
-			elif j ==6:
-				try:
-					path= 'images/' + weatherForecast[i][j]  +'.png'
-					first_step = Image.open(path)
-					img = first_step.resize((50,50), resample=0)
-					my_image = PhotoImage(img)
-					weathertable = tk.Label(image=my_image, borderwidth = 0)
-					weathertable.image = my_image
-					weathertable.grid(in_=MR, row=i, column=j, padx=10)
-				except:
-					weathertable = tk.Label(root, text=weatherForecast[i][j], font = ('caviar dreams', 10), bg='black', fg='white')
-					weathertable.grid(in_=MR, row=i, column=j, padx = 10)
-			weatherCells[(i,j)] = weathertable
+# def drawWeather():
+# 	global weatherCells
+# 	weatherForecast = weather.weatherFor()
+# 	weatherCells={}
+# 	for i in range(8): #Rows
+# 		for j in range(7): #Columns
+# 			if j<5:
+# 				weathertable = tk.Label(root, text=weatherForecast[i][j], font = ('caviar dreams', 12, 'bold'), bg='black', fg='white')
+# 				weathertable.grid(in_=MR, row=i, column=j, padx = 10)				
+# 			elif j == 5:
+# 				weathertable = tk.Label(root, text=weatherForecast[i][j], font = ('caviar dreams', 12, 'bold'), bg='black', fg='white')
+# 				weathertable.grid(in_=MR, row=i, column=j, padx = 10)
+# 			elif j ==6:
+# 				try:
+# 					path= 'images/' + weatherForecast[i][j]  +'.png'
+# 					first_step = Image.open(path)
+# 					img = first_step.resize((50,50), resample=0)
+# 					my_image = PhotoImage(img)
+# 					weathertable = tk.Label(image=my_image, borderwidth = 0)
+# 					weathertable.image = my_image
+# 					weathertable.grid(in_=MR, row=i, column=j, padx=10)
+# 				except:
+# 					weathertable = tk.Label(root, text=weatherForecast[i][j], font = ('caviar dreams', 10), bg='black', fg='white')
+# 					weathertable.grid(in_=MR, row=i, column=j, padx = 10)
+# 			weatherCells[(i,j)] = weathertable
 
 
 def eventRefresh():
@@ -200,7 +200,6 @@ def busRefresh():
 def drawBus():
 	"""need to test at night with no buses"""
 	global busCells
-	busTimes = bus.main(876)
 	headers = ["Bus", "Destination", "Time"]
 	busCells = {}
 	for i in range(4): #Rows, limiting it to four buses
@@ -235,9 +234,6 @@ def spotRefresh():
 	try:
 		spotDetails = Spotify.main(token)
 		icons = ("music note", "person", "pause")
-
-
-		
 
 		if spotDetails:
 
@@ -366,7 +362,7 @@ stext.grid(in_=BM, sticky = "S")
 
 refresh()
 drawEvents()
-drawWeather()
+# drawWeather()
 updateWeatherEvents()
 drawSpot()
 drawBus()
