@@ -14,13 +14,17 @@ from PIL import Image
 class MagicMirror:
     def __init__(self, master):
         self.master = master
+        self.track = ""
+        self.show_more = True
+
+
         self.draw_funcs()
         self.refresh_funcs()
         self.master.title('Magic Mirror')
         self.master.attributes("-fullscreen", True)
         self.master.configure(background='black')
         self.master.bind("<Escape>", lambda event:self.master.destroy())
-
+        
 
     def draw_funcs(self):
         self.grid()
@@ -82,6 +86,7 @@ class MagicMirror:
         else:
             No_Events = Label(root, text="No upcoming events", font = ('caviar dreams', 10), bg='black', fg='white')
             No_Events.grid(in_= self.ML, row = 1, column = 1, padx=15)
+        self.eventRefresh()
 
     def drawWeather(self):
         weatherForecast = weather.weatherFor()
@@ -206,7 +211,7 @@ class MagicMirror:
 
     def eventRefresh(self):
         events = gC.main()
-
+        #to do add error catching if fewer than 8 events coming up
         if events:
             for i in range(8):
                 for j in range(2):
@@ -215,6 +220,7 @@ class MagicMirror:
             for i in range(8):
                 for j in range(2):
                     self.eventCells[(i,j)].configure(text="")
+        self.event_after = self.master.after(9990000, self.eventRefresh)
 
 
     def busRefresh(self):
@@ -233,14 +239,31 @@ class MagicMirror:
 
         except:
             pass
-        self.master.after(60000, self.busRefresh)
+        self.bus_after = self.master.after(60000, self.busRefresh)
+
+
+    def switch(self):
+        if self.track == "Hide" and self.show_more:
+            for bus_time in self.bus_cells.values():
+                bus_time.destroy()
+            self.master.after_cancel(self.bus_after)
+
+            for event in self.eventCells.values():
+                event.destroy()
+            self.eventTitle.destroy()
+            self.master.after_cancel(self.event_after)
+            self.show_more = False
+        elif self.track == "Hit Me Baby One More Time" and not self.show_more:
+            self.drawBus()
+            self.drawEvents()
+            self.show_more = True
+        
 
     def updateWeatherEvents(self):
         """Function which updates every 61 mins. The token for spotify expires after an hour, until it refreshes, the Spot
         refresh idles. Weather and events are also updated"""
 
         self.weatherRefresh()
-        self.eventRefresh()
         self.token = Spotify.getToken()
         self.master.after(3660000, self.updateWeatherEvents)
 
@@ -276,6 +299,9 @@ class MagicMirror:
                 self.spotCells[(2,1)].configure(text="")		
         except:
             pass
+
+        if self.track == "Hide" or self.track == "Hit Me Baby One More Time":
+            self.switch()
         self.master.after(1000, self.spotRefresh)
 
 

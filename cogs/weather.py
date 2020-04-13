@@ -8,12 +8,12 @@ owm = pyowm.OWM(LaK.api_keys["owm"])  # You MUST provide a valid API key
 
 def currentTemp():
 	# Search for current weather in Dublin
-	observation = owm.weather_at_place('Dublin,Ireland')
+	observation = owm.weather_at_place('Dublin,IE')
 	w = observation.get_weather()
 	return w.get_temperature('celsius')['temp']
 
 def weatherFor():
-	fc = owm.three_hours_forecast('Dublin, Ireland')
+	fc = owm.three_hours_forecast('Dublin, IE')
 	f = fc.get_forecast()
 	emptyList = []
 	for weather in f:
