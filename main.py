@@ -64,7 +64,7 @@ class MagicMirror:
 
         self.stext = scrolledtext.ScrolledText(font = ('caviar dreams', 12), bg='black', fg='white', height =10, borderwidth = 0)
         self.stext.after(1000, lambda: self.scroll_textbox(self.stext))
-        self.stext.grid(in_=self.BM, sticky = "ESW", padx = 25)
+        self.stext.grid(in_=self.BM)
 
     def drawEvents(self):
         self.eventTitle = Label(root, font = ('caviar dreams', 15, 'bold'), bg='black', fg='white')
@@ -105,16 +105,16 @@ class MagicMirror:
     def drawBus(self):
         """need to test at night with no buses"""
         headers = ["Bus", "Destination", "Time"]
-        self.busCells = {}
+        self.bus_cells = {}
         for i in range(4): #Rows, limiting it to four buses
             for j in range(3): #Columns
                 if i == 0:#the headers
                     busTable = Label(self.master, text=headers[j], font = ('caviar dreams', 12, 'bold'), bg='black', fg='white')
-                    busTable.grid(in_= self.TR, row = i+1, column = j, padx=15)
+                    busTable.grid(in_= self.BR, row = i+1, column = j, padx=15, sticky='E')
                 else:
                     busTable = Label(self.master, font = ('caviar dreams', 12), bg='black', fg='white')
-                    busTable.grid(in_= self.TR, row = i+1, column = j, padx=15)
-                self.busCells[(i,j)] = busTable
+                    busTable.grid(in_= self.BR, row = i+1, column = j, padx=15, sticky='E')
+                self.bus_cells[(i,j)] = busTable
         self.busRefresh()
 
     def drawSpot(self):
@@ -221,14 +221,15 @@ class MagicMirror:
         """Funnction calls the main method in bus.py for given stop. If there are more than 4 buses, only the first 4 will be printed.
         As this is refresh there is no need to re place the headings, so i starts at 1. Refreshes every minute"""
         try:
-            busTimes = bus.main(876)
+            bus_stop = 879
+            bus_times = bus.main(bus_stop)
             for i in range(1,4):#clearing the table
                 for j in range(3):
-                    self.busCells[(i,j)].configure(text="")
-            if busTimes:
-                for i in range(1,min(4,len(busTimes))):
+                    self.bus_cells[(i,j)].configure(text="")
+            if bus_times:
+                for i in range(1,min(4,len(bus_times))):
                     for j in range(3): #Columns
-                        self.busCells[(i,j)].configure(text=busTimes[i][j])
+                        self.bus_cells[(i,j)].configure(text=bus_times[i][j])
 
         except:
             pass
@@ -260,7 +261,7 @@ class MagicMirror:
                     self.spotCells[(i,0)].configure(image=my_image)
                     self.spotCells[(i,0)].image = my_image
 
-
+                self.track = spotDetails[0]
                 self.spotCells[(0,1)].configure(text=spotDetails[0][:45])#limiting name length
                 self.spotCells[(1,1)].configure(text=spotDetails[1][:55])
                 self.spotCells[(2,1)].configure(text=spotDetails[2] + " / " + spotDetails[3])
@@ -306,16 +307,14 @@ class MagicMirror:
         self.TR = Label(self.master, bg='black', width=30)
         self.TR.grid(row=0,column=2)
 
-        self.master.grid_columnconfigure(0, weight=2)
-        self.master.grid_columnconfigure(1, weight=5)
-        self.master.grid_columnconfigure(2, weight=2)  
+        self.master.grid_columnconfigure(0, weight=1)
+        self.master.grid_columnconfigure(1, weight=1)
+        self.master.grid_columnconfigure(2, weight=1)  
 
         self.master.grid_rowconfigure(0, weight=1)
         self.master.grid_rowconfigure(1, weight=2)
         self.master.grid_rowconfigure(2, weight=2)
 
-        # self.BM.grid_columnconfigure(0, weight=1)
-        # self.BM.grid_rowconfigure(0, weight=1)
 
         self.TL.grid_propagate(False)
         self.TM.grid_propagate(False)
