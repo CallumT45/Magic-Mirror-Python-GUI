@@ -19,7 +19,5 @@ def weatherFor():
 	for weather in f:
 		time = weather.get_reference_time(timeformat='date')
 		datetime_object = dt.strptime(str(time), '%Y-%m-%d %H:%M:%S+00:00').strftime('%H:%M')
-		#I have added the whitespace as for some reason, sticky wasnt working with this table. The whitespace moves the
-		#table to the right. 
-		emptyList.append(["     ","     ","     ","     ","     ",datetime_object, weather.get_detailed_status()])
+		emptyList.append([datetime_object, weather.get_detailed_status()])
 	return emptyList

@@ -5,7 +5,9 @@ import spotipy.util as util
 from json.decoder import JSONDecodeError
 import time
 import datetime
+
 from cogs import LoginsAndKeys as LaK
+# import LoginsAndKeys as LaK
 
 username = LaK.logins["spotifyUsername"]
 scope = 'user-read-private user-read-playback-state'
@@ -42,7 +44,8 @@ def main(token):
 		current_full = str(datetime.timedelta(seconds=current))
 		current_short =  datetime.datetime.strptime(current_full, '%H:%M:%S').strftime('%M:%S')
 		percentage_complete = round(current/duration,2)
-
 		return [track, artist, current_short, duration_short, percentage_complete]
 
-
+if __name__=="__main__":
+	token = getToken()
+	print(main(token))
