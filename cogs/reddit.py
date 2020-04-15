@@ -1,6 +1,6 @@
 import praw
 from cogs import LoginsAndKeys as LaK
-#https://www.youtube.com/watch?v=NRgfgtzIhBQ
+
 def main():
 	"""Creates reddit object, then interate through list of subreddits, then iterate through the submissions on each subreddit.
 	If the submission is not stickied, then add it to the empty list. Not all characters can be represented on a raspberry pi. 
